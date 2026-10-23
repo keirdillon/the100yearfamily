@@ -2,4 +2,4 @@ User-agent: *
 Allow: /
 Disallow: /api/
 
-Sitemap: https://100yearos.com/sitemap.xml
+Sitemap: https://the100yearfamily.com/sitemap.xml

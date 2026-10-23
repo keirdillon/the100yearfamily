@@ -52,12 +52,10 @@ After changing environment variables, redeploy so they take effect (Deployments 
 
 Until `RESEND_API_KEY` is set, the form shows "Sign-ups aren't connected yet" and stores nothing.
 
-### 4. Pick the domain
-**100yearos.com currently serves the SaaS app.** Options:
-- **A. Book page on the root, app on a subdomain.** Move the app to `app.100yearos.com`, then add `100yearos.com` to this project. This is the strongest setup for the launch.
-- **B. Book page on a subdomain,** for example `book.100yearos.com`. Add that subdomain to this project in Vercel → Settings → Domains.
+### 4. Domain
+The site runs at **https://the100yearfamily.com** (GoDaddy DNS: `A @ 216.150.1.1`). `www.the100yearfamily.com` is a permanent redirect to the bare domain, set in Vercel → Settings → Domains.
 
-If the final address isn't `https://100yearos.com`, find and replace that URL in `index.html` (canonical, og:url, og:image, JSON-LD), `privacy.html`, `robots.txt` and `sitemap.xml`.
+If the address ever changes, find and replace `https://the100yearfamily.com` in `index.html` (canonical, og:url, og:image, JSON-LD), `privacy.html`, `robots.txt` and `sitemap.xml`.
 
 ### 5. Optional extras
 - **Analytics:** Vercel → Project → **Analytics → Enable**. The page already includes the script, which is privacy-friendly and cookieless.
