@@ -30,7 +30,7 @@
   <link rel="preload" href="/assets/fonts/EBGaramond.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="/assets/fonts/SourceSerif4.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="/assets/img/book-100-year-family.webp" as="image">
-  <link rel="stylesheet" href="/assets/css/styles.css?v=20261023c">
+  <link rel="stylesheet" href="/assets/css/styles.css?v=20261023d">
 
   <script type="application/ld+json">
   {
@@ -45,7 +45,7 @@
     "inLanguage": "en"
   }
   </script>
-  <script defer src="/assets/js/main.js?v=20261023c"></script>
+  <script defer src="/assets/js/main.js?v=20261023d"></script>
 </head>
 <body>
 <a class="skip-link" href="#main">Skip to content</a>
@@ -68,11 +68,12 @@
         <p class="hero__kicker">Families who build strength and virtue, do.</p>
         <p class="hero__sub">The operating system for families who intend to last longer than their money.</p>
 
-        <form class="signup js-signup" action="/api/subscribe" method="post" novalidate>
+        <form class="signup js-signup" action="https://formspree.io/f/xwllknya" method="post" novalidate>
           <input type="hidden" name="source" value="hero">
+          <input type="hidden" name="_subject" value="New Founding Reader (hero)">
           <div class="hp" aria-hidden="true">
             <label for="hero-company">Company</label>
-            <input id="hero-company" type="text" name="company" tabindex="-1" autocomplete="off">
+            <input id="hero-company" type="text" name="_gotcha" tabindex="-1" autocomplete="off">
           </div>
           <label for="hero-email" class="sr-only">Email address</label>
           <div class="signup__row">
@@ -267,11 +268,12 @@
         </div>
       </div>
       <div class="join-card on-dark">
-        <form class="js-signup" action="/api/subscribe" method="post" novalidate>
+        <form class="js-signup" action="https://formspree.io/f/xwllknya" method="post" novalidate>
           <input type="hidden" name="source" value="founding-readers">
+          <input type="hidden" name="_subject" value="New Founding Reader (founding-readers)">
           <div class="hp" aria-hidden="true">
             <label for="join-company">Company</label>
-            <input id="join-company" type="text" name="company" tabindex="-1" autocomplete="off">
+            <input id="join-company" type="text" name="_gotcha" tabindex="-1" autocomplete="off">
           </div>
           <p class="join-card__title">Join free. Chapter One is on us.</p>
           <label class="first" for="join-name">First name</label>

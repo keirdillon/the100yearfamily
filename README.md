@@ -3,7 +3,7 @@
 The pre-launch page for *The 100-Year Family* by Jeremy Straub: a book reveal, the story, and the **Founding Readers** email signup.
 
 - Plain HTML, CSS and JavaScript. No framework, **no build step**, nothing to install.
-- One serverless function (`/api/subscribe`) saves signups to **Resend**, which the 100YF stack already uses.
+- Signups post straight to **Formspree** (form `xwllknya`), so there is no server code and nothing to configure in Vercel.
 - Fonts, images and scripts are all self-hosted. No third-party trackers or cookies.
 
 ---
@@ -15,14 +15,12 @@ index.html              The landing page
 privacy.html            Privacy page (DRAFT: fill in the [BRACKETS])
 thank-you.html          Shown after signup when JavaScript is off
 404.html                Not-found page
-api/subscribe.js        Signup endpoint → Resend Contacts (+ optional welcome email)
 assets/css/styles.css   All styles (brand tokens at the top)
-assets/js/main.js       Generations animation + signup forms
+assets/js/main.js       Generations animation + signup forms (POST to Formspree)
 assets/img/             Book mockup, cover, photos, tree-rings art, social share card
 assets/fonts/           EB Garamond, Source Serif 4, DM Sans (woff2)
 vercel.json             Clean URLs, caching and security headers
 robots.txt, sitemap.xml, site.webmanifest, favicons
-.env.example            The environment variables the signup needs
 ```
 
 ---
@@ -38,19 +36,12 @@ Pick one:
 ### 2. Import into Vercel
 1. Vercel → **Add New → Project** → import the repo.
 2. **Framework Preset: Other.** Leave the Build Command and Output Directory empty, because nothing gets built.
-3. Add the environment variables from step 3, then **Deploy**.
+3. **Deploy.** No environment variables are needed.
 
-### 3. Connect the signup (Resend)
-In resend.com:
-1. **API Keys** → create a key with "Full access" (or "Sending" + contacts). Save it as `RESEND_API_KEY` in Vercel.
-2. **Contacts → Segments** → create a segment called *Founding Readers*. Put its ID in `RESEND_SEGMENT_ID`. This is optional but recommended, so book readers stay separate from app users.
-3. **Optional welcome email:** verify the sending domain under **Domains** (for example 100yearos.com), then set
-   `RESEND_FROM_EMAIL="Jeremy Straub <jeremy@100yearos.com>"`. Leave it unset to skip the welcome email.
-4. **Optional:** set `NOTIFY_EMAIL` to get a note for every new signup.
+### 3. The signup (Formspree)
+Both forms post to `https://formspree.io/f/xwllknya`. Submissions land in the Formspree dashboard and in the notification email set there. Fields sent: `email`, `firstName` (second form only), `source` (`hero` or `founding-readers`), and `_subject`. The hidden `_gotcha` field is Formspree's honeypot: bots fill it, people never see it.
 
-After changing environment variables, redeploy so they take effect (Deployments → ⋯ → Redeploy).
-
-Until `RESEND_API_KEY` is set, the form shows "Sign-ups aren't connected yet" and stores nothing.
+To change where signups go, replace the endpoint in both `<form action="…">` tags in `index.html`. To export the list or connect it to an email tool, use Formspree's dashboard (Integrations).
 
 ### 4. Domain
 The site runs at **https://the100yearfamily.com** (GoDaddy DNS: `A @ 216.150.1.1`). `www.the100yearfamily.com` is a permanent redirect to the bare domain, set in Vercel → Settings → Domains.
@@ -65,7 +56,7 @@ If the address ever changes, find and replace `https://the100yearfamily.com` in 
 
 ## Run it locally
 - **Look only:** `npx serve .` then open the address it prints. The signup endpoint won't run this way.
-- **With the signup working:** `npm i -g vercel`, then `vercel link`, then copy `.env.example` to `.env.local` and fill it in, then `vercel dev`.
+- The forms post to Formspree directly, so they work locally too.
 
 ## Editing content
 - All copy is in `index.html`. Each section is labelled with a comment (`HERO`, `THE SHIRTSLEEVES CYCLE`, and so on).
@@ -78,10 +69,7 @@ If the address ever changes, find and replace `https://the100yearfamily.com` in 
 - [ ] Compliance review of the page and the welcome email, given Jeremy's role at Coastal Wealth.
 - [ ] Replace the three photos with full-resolution originals. The current files are 864 px, which looks soft on the full-width ranch band.
 - [ ] Confirm the offers the page promises: Chapter One early, the Continuity Score, The Family Dispatch, and the Summit invitation.
-- [ ] Send yourself a test signup on the live site and confirm the contact appears in Resend.
+- [ ] Send yourself a test signup on the live site and confirm it appears in the Formspree dashboard.
 
 ## How the signup works
-`POST /api/subscribe` accepts JSON or a normal form post with `email`, `firstName` (optional) and `source` (`hero` or `founding-readers`).
-- A hidden "company" field catches bots without a CAPTCHA.
-- Emails already on the list are treated as success, and they don't get a second welcome email.
-- Welcome or notify email failures never block a signup. They're written to the Vercel function logs.
+`assets/js/main.js` sends the form as JSON to Formspree with `Accept: application/json`, then swaps the form for the "You're a Founding Reader" message. Formspree's own error messages (for example an invalid email) show inline. With JavaScript off, the form posts normally and Formspree shows its own thank-you page.

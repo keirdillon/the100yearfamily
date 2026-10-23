@@ -1,6 +1,6 @@
 /* The 100-Year Family — landing page behaviour
    1. Generations story (auto-plays when in view, click to explore)
-   2. Founding Readers signup forms (POST /api/subscribe)
+   2. Founding Readers signup forms (POST to Formspree)
    No dependencies. */
 (function () {
   'use strict';
@@ -71,7 +71,7 @@
     }
   }
 
-  /* ---------- 2. Signup forms ---------- */
+  /* ---------- 2. Signup forms (Formspree) ---------- */
   var EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 
   Array.prototype.forEach.call(document.querySelectorAll('.js-signup'), function (form) {
@@ -84,18 +84,19 @@
       ev.preventDefault();
       errorEl.textContent = '';
 
-      var data = {
-        email: (form.elements.email.value || '').trim(),
-        firstName: form.elements.firstName ? form.elements.firstName.value.trim() : '',
-        source: form.elements.source ? form.elements.source.value : 'site',
-        company: form.elements.company ? form.elements.company.value : ''
-      };
-
-      if (!EMAIL_RE.test(data.email)) {
+      var email = (form.elements.email.value || '').trim();
+      if (!EMAIL_RE.test(email)) {
         errorEl.textContent = 'Please enter a valid email address.';
         form.elements.email.focus();
         return;
       }
+
+      // Everything in the form, including the hidden source/_subject/_gotcha fields.
+      var data = {};
+      Array.prototype.forEach.call(form.elements, function (el) {
+        if (el.name) data[el.name] = el.value;
+      });
+      data.email = email;
 
       button.disabled = true;
       button.textContent = 'Joining…';
@@ -107,13 +108,15 @@
       })
         .then(function (res) {
           return res.json().catch(function () { return {}; }).then(function (body) {
-            if (!res.ok || !body.ok) { throw new Error(body.error || 'Something went wrong. Please try again.'); }
+            if (res.ok && body.ok !== false) return;
+            var msg = (body.errors && body.errors.length && body.errors[0].message) || body.error || 'Something went wrong. Please try again.';
+            throw new Error(msg);
           });
         })
         .then(function () {
           form.hidden = true;
           if (success) { success.hidden = false; success.focus(); }
-          if (window.va) { try { window.va('event', { name: 'signup', data: { source: data.source } }); } catch (e) {} }
+          if (window.va) { try { window.va('event', { name: 'signup', data: { source: data.source || 'site' } }); } catch (e) {} }
         })
         .catch(function (err) {
           errorEl.textContent = err.message || 'Something went wrong. Please try again.';
