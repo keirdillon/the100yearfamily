@@ -109,7 +109,8 @@
         .then(function (res) {
           return res.json().catch(function () { return {}; }).then(function (body) {
             if (res.ok && body.ok !== false) return;
-            var msg = (body.errors && body.errors.length && body.errors[0].message) || body.error || 'Something went wrong. Please try again.';
+            var raw = (body.errors && body.errors.length && body.errors[0].message) || body.error;
+            var msg = (typeof raw === 'string' && raw) ? raw : 'Something went wrong. Please try again.';
             throw new Error(msg);
           });
         })
@@ -119,7 +120,11 @@
           if (window.va) { try { window.va('event', { name: 'signup', data: { source: data.source || 'site' } }); } catch (e) {} }
         })
         .catch(function (err) {
-          errorEl.textContent = err.message || 'Something went wrong. Please try again.';
+          var text = err && typeof err.message === 'string' ? err.message : '';
+          if (!text || /^\[object/.test(text) || /failed to fetch|networkerror|load failed/i.test(text)) {
+            text = 'We couldn\'t reach the signup service. Please check your connection and try again.';
+          }
+          errorEl.textContent = text;
           button.disabled = false;
           button.textContent = buttonLabel;
         });
