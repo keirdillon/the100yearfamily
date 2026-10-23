@@ -1,0 +1,12 @@
+{
+  "name": "100-year-family-landing",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Book landing page and Founding Readers signup for The 100-Year Family by Jeremy Straub.",
+  "type": "module",
+  "engines": { "node": ">=20" },
+  "scripts": {
+    "dev": "vercel dev",
+    "preview": "npx --yes serve ."
+  }
+}
